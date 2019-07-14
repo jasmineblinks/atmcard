@@ -161,10 +161,10 @@
           
          
     <script>
-             const appState = {};
+            const appState = {};
       
       const formatAsMoney=(amount,buyerCountry)=>{
-        const bill=countries.filter(country=> country.country===buyerCountry);
+        const bill=countries.find(country => country.country === buyerCountry);
         if(bill){
           return amount.toLocaleString(`en-${country.code}`,{style:'currency', currency: country.currency});
         }else {
@@ -191,8 +191,27 @@
       
       
 
-      const detectCardType=({target})=>{
+      const detectCardType = ({target}) => {
+        const creditCard = document.querySelector('[data-credit-card]');
+        const image = document.querySelector('[data-card-type]');
         
+        if(target.value.startsWith('4')){
+          creditCard.classList.add('is-visa');
+          creditCard.classList.remove('is-master');
+          image.src = supportedCards.visa;
+          return 'is-visa';
+        } else if (target.value.startsWith('5')) {
+          creditCard.classList.add('is-mastercard');
+          creditCard.classList.remove('is-visa');
+          image.src = supportedCards.mastercard;
+          return 'is-mastercard';
+          
+        } else {
+          creditCard.classList.add('is-invalid');
+          creditCard.classList.remove('is-visa');
+          creditCard.classList.remove('is-mastercard');
+          return 'is-invalid';
+        }
       };
 
       const validateCardExpiryDate = ({target}) => {
@@ -213,6 +232,11 @@
         const nameFormat = /^[a-zA-z]{3,}[\s][a-zA-z]{3,}$/.test(value);
         return nameFormat && flagIfInvalid(target, nameFormat);
       };
+      
+      const validateCardNumber = () => {
+        
+      }
+      
       const uiCanInteract =() => {
         const digiInput = document.querySelector('[data-cc-digits]input');
         digiInput.addEventListener('blur', detectCardType);
@@ -302,6 +326,7 @@
         fetchBill();
       };
       startApp();
+     
      
       
     </script>
